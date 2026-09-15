@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { FiUser, FiHash, FiLogIn, FiKey } from "react-icons/fi";
 import { joinGame, type Game } from "../services/gameService";
+import styles from "./JoinGame.module.css";
 
 const JoinGame = () => {
   const [gameId, setGameId] = useState("");
@@ -12,7 +14,7 @@ const JoinGame = () => {
   const handleJoinGame = async () => {
     setJoinedGame(null);
     if (!gameId.trim() || !playerName.trim()) {
-      setError("Id da partida e nome do jogador sao obrigatorios");
+      setError("Id da partida e nome do jogador são obrigatórios");
       return;
     }
     setLoading(true);
@@ -21,7 +23,7 @@ const JoinGame = () => {
       const playerId = crypto.randomUUID();
       setMyPlayerId(playerId);
       const response = await joinGame(gameId.trim(), {
-        playerId: playerId,
+        playerId,
         playerName: playerName.trim(),
       });
       setJoinedGame(response);
@@ -32,33 +34,63 @@ const JoinGame = () => {
     }
   };
 
+  const myHand = joinedGame?.playersList.find(
+    (p) => p.playerId === myPlayerId,
+  )?.hand;
+
   return (
-    <div>
-      <h2>Entrar em uma partida</h2>
-      <label htmlFor="gameId">ID da partida</label>
-      <input
-        type="text"
-        name="gameId"
-        id="gameId"
-        value={gameId}
-        onChange={(e) => setGameId(e.target.value)}
-      />
-      <label htmlFor="playerName">Nome do jogador</label>
-      <input
-        type="text"
-        name="playerName"
-        id="playerName"
-        value={playerName}
-        onChange={(e) => setPlayerName(e.target.value)}
-      />
-      <button onClick={handleJoinGame} disabled={loading}>
-        Entrar na partida {loading && <span>Carregando...</span>}
-      </button>
-      {error && <span>{error}</span>}
-      {joinedGame && (
+    <article className={styles.panel}>
+      <header className={styles.header}>
+        <span className={styles.headerIcon} aria-hidden>
+          <FiKey />
+        </span>
         <div>
+          <h2 className={styles.title}>Entrar na Partida</h2>
+          <p className={styles.subtitle}>
+            Digite o código enviado pelo seu parceiro
+          </p>
+        </div>
+      </header>
+
+      <label className={styles.field}>
+        <span className={styles.labelRow}>
+          <span>ID da Partida</span>
+          <span className={styles.labelHint}>Código da mesa</span>
+        </span>
+        <span className={styles.inputWrap}>
+          <FiHash aria-hidden />
+          <input
+            type="text"
+            value={gameId}
+            placeholder="Ex: 42"
+            onChange={(e) => setGameId(e.target.value)}
+            autoComplete="off"
+          />
+        </span>
+      </label>
+
+      <label className={styles.field}>
+        <span className={styles.labelRow}>
+          <span>Nome do Jogador</span>
+        </span>
+        <span className={styles.inputWrap}>
+          <FiUser aria-hidden />
+          <input
+            type="text"
+            value={playerName}
+            placeholder="Digite seu nome"
+            onChange={(e) => setPlayerName(e.target.value)}
+            autoComplete="nickname"
+          />
+        </span>
+      </label>
+
+      {loading && <p className={styles.status}>Entrando na partida…</p>}
+      {error && <p className={styles.error}>{error}</p>}
+      {joinedGame && (
+        <div className={styles.successBox}>
           <p>
-            Partida encontrada com sucesso! ID: {joinedGame.id} Status:{" "}
+            Entrou! ID: <strong>{joinedGame.id}</strong> ·{" "}
             {joinedGame.gameStatus}
           </p>
           <p>
@@ -70,18 +102,28 @@ const JoinGame = () => {
               Vira: {joinedGame.vira.value} de {joinedGame.vira.naipe}
             </p>
           )}
-          {myPlayerId && (
+          {myHand && myHand.length > 0 && (
             <p>
-              Minhas Cartas:{" "}
-              {joinedGame.playersList
-                .find((p) => p.playerId === myPlayerId)
-                ?.hand.map((c) => `${c.value} de ${c.naipe}`)
-                .join(", ")}
+              Minhas cartas:{" "}
+              {myHand.map((c) => `${c.value} de ${c.naipe}`).join(", ")}
             </p>
           )}
         </div>
       )}
-    </div>
+
+      <footer className={styles.footer}>
+        <span className={styles.footerNote}>Pronto para duelizar</span>
+        <button
+          type="button"
+          className={styles.submit}
+          onClick={handleJoinGame}
+          disabled={loading}
+        >
+          Entrar na Partida
+          <FiLogIn aria-hidden />
+        </button>
+      </footer>
+    </article>
   );
 };
 

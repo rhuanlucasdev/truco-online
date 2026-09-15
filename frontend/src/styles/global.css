@@ -1,11 +1,17 @@
 :root {
-  --felt: #1a4d3e;
-  --felt-light: #2d6b54;
+  --page-bg: #14110e;
+  --hero-bg: #1a4d3e;
+  --hero-bg-deep: #0f2e25;
+  --panel-bg: #2a241e;
+  --panel-bg-soft: #221c17;
+  --gold: #d4af37;
+  --accent: #f0b429;
+  --join-red: #8b2e2e;
+  --join-red-hot: #a33a3a;
   --cream: #f3efe6;
   --ink: #1c1917;
-  --accent: #e8a317;
-  --danger: #e85d4c;
-  --font-brand: "Passion One", sans-serif;
+  --muted: color-mix(in srgb, var(--cream) 55%, transparent);
+  --font-brand: "Cinzel", serif;
   --font-ui: "Manrope", sans-serif;
 }
 
@@ -25,17 +31,21 @@ a {
   color: inherit;
 }
 
+button,
+input {
+  font: inherit;
+}
+
 body {
   min-height: 100vh;
   margin: 0;
   font-family: var(--font-ui);
   color: var(--cream);
-  background-color: var(--felt);
+  background-color: var(--page-bg);
   background-image: radial-gradient(
-    ellipse 120% 80% at 50% 50%,
-    #3a8f6e 0%,
-    var(--felt),
-    var(--felt-light)
+    ellipse 90% 60% at 50% 0%,
+    color-mix(in srgb, var(--hero-bg) 35%, transparent) 0%,
+    var(--page-bg) 55%
   );
   background-attachment: fixed;
 }

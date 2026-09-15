@@ -1,140 +1,269 @@
-.lobby {
-  max-width: 960px;
+.page {
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 3rem 1.5rem 4rem;
-  min-height: 100vh;
+  padding: 1.5rem 1.25rem 3rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 2rem;
 }
 
-.lobby__header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.hero {
+  position: relative;
+  padding: 2.5rem 1.5rem 1.75rem;
+  border-radius: 1rem;
+  background:
+    radial-gradient(
+      ellipse 80% 70% at 50% 20%,
+      color-mix(in srgb, #3a8f6e 45%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(180deg, var(--hero-bg) 0%, var(--hero-bg-deep) 100%);
+  border: 1px solid color-mix(in srgb, var(--gold) 18%, transparent);
   text-align: center;
-  gap: 0.75rem;
-  margin-bottom: 2.5rem;
+  overflow: hidden;
 }
 
-.lobby__brand {
-  font-family: var(--font-brand);
-  font-size: clamp(3rem, 10vw, 5rem);
+.heroCards {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 5.5rem;
+  margin-bottom: 1rem;
+  perspective: 600px;
+}
+
+.fakeCard {
+  display: grid;
+  place-items: center;
+  width: 3.4rem;
+  height: 4.6rem;
+  border-radius: 0.4rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: var(--cream);
-  line-height: 1;
-  letter-spacing: 0.02em;
+  box-shadow: 0 8px 18px color-mix(in srgb, #000 40%, transparent);
 }
 
-.lobby__subtitle {
-  font-family: var(--font-ui);
-  font-size: clamp(1rem, 2vw, 1.15rem);
-  color: var(--cream);
-  opacity: 0.85;
+.fakeCardLeft {
+  background: #f7f2ea;
+  color: #c0392b;
+  transform: rotate(-14deg) translateY(0.4rem);
+  z-index: 1;
 }
 
-/* CTAs da home — não são mais os forms */
-.lobby__actions {
+.fakeCardCenter {
+  background: #f7f2ea;
+  color: var(--ink);
+  font-family: var(--font-brand);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  transform: translateY(-0.35rem);
+  z-index: 2;
+  border: 2px solid var(--gold);
+}
+
+.fakeCardRight {
+  background: #f7f2ea;
+  color: var(--ink);
+  transform: rotate(14deg) translateY(0.4rem);
+  z-index: 1;
+}
+
+.eyebrow {
+  color: var(--gold);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 0.65rem;
+}
+
+.brand {
+  font-family: var(--font-brand);
+  font-size: clamp(2.4rem, 7vw, 3.6rem);
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tagline {
+  margin: 0.85rem auto 0;
+  max-width: 28rem;
+  color: var(--cream);
+  opacity: 0.9;
+  font-size: 1.02rem;
+}
+
+.heroActions {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  gap: 1rem;
-  width: 100%;
-  max-width: 22rem;
-  margin: 0 auto;
+  gap: 0.75rem;
+  margin: 1.75rem auto 0;
+  max-width: 26rem;
 }
 
-@media (min-width: 640px) {
-  .lobby__actions {
+@media (min-width: 560px) {
+  .heroActions {
     flex-direction: row;
-    max-width: 28rem;
     justify-content: center;
+    max-width: none;
   }
 }
 
-.lobby__cta {
-  flex: 1;
-  font-family: var(--font-ui);
-  font-size: 1rem;
-  font-weight: 700;
-  padding: 0.9rem 1.25rem;
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.35rem;
+  border-radius: 999px;
   border: 2px solid transparent;
-  border-radius: 0.5rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: transform 0.15s ease, filter 0.15s ease, background-color 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    filter 0.15s ease,
+    background-color 0.15s ease;
 }
 
-.lobby__cta:hover {
+.cta:hover {
   transform: translateY(-1px);
   filter: brightness(1.05);
 }
 
-.lobby__cta:active {
-  transform: translateY(0);
-}
-
-/* Criar — destaque */
-.lobby__cta--primary {
-  background-color: var(--accent);
+.ctaPrimary {
+  background: linear-gradient(180deg, #ffd56a 0%, var(--accent) 100%);
   color: var(--ink);
 }
 
-/* Entrar — secundário */
-.lobby__cta--secondary {
-  background-color: transparent;
-  color: var(--cream);
-  border-color: color-mix(in srgb, var(--cream) 45%, transparent);
+.ctaSecondary {
+  background: color-mix(in srgb, var(--panel-bg) 80%, #000);
+  color: var(--gold);
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
 }
 
-.lobby__cta--secondary:hover {
-  background-color: color-mix(in srgb, var(--cream) 10%, transparent);
-}
-
-/* Overlay do modal */
-.lobby__modalOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
+.heroPerks {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   justify-content: center;
-  padding: 1.5rem;
-  background-color: color-mix(in srgb, #0f2e25 72%, transparent);
-  backdrop-filter: blur(2px);
+  gap: 0.75rem 1.5rem;
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid color-mix(in srgb, var(--cream) 12%, transparent);
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
-.lobby__modal {
-  position: relative;
-  width: 100%;
-  max-width: 26rem;
-  padding: 1.75rem 1.5rem 1.5rem;
-  border-radius: 0.75rem;
-  background-color: color-mix(in srgb, var(--felt) 88%, #0a1f18);
+.heroPerks li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.access {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.accessHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.accessEyebrow {
+  color: var(--gold);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.accessTitle {
+  font-family: var(--font-brand);
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  font-weight: 600;
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  color: var(--muted);
   border: 1px solid color-mix(in srgb, var(--cream) 18%, transparent);
-  box-shadow: 0 12px 40px color-mix(in srgb, #000 35%, transparent);
-  color: var(--cream);
+  background: color-mix(in srgb, var(--panel-bg) 70%, transparent);
 }
 
-.lobby__modalClose {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  width: 2rem;
-  height: 2rem;
+.accessGrid {
   display: grid;
-  place-items: center;
-  padding: 0;
-  border: none;
-  border-radius: 0.35rem;
-  background: transparent;
-  color: var(--cream);
-  font-size: 1.35rem;
-  line-height: 1;
-  cursor: pointer;
-  opacity: 0.7;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  align-items: stretch;
 }
 
-.lobby__modalClose:hover {
-  opacity: 1;
-  background-color: color-mix(in srgb, var(--cream) 12%, transparent);
+@media (min-width: 860px) {
+  .accessGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.features {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 720px) {
+  .features {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.featureCard {
+  padding: 1.25rem;
+  border-radius: 0.85rem;
+  background: var(--panel-bg);
+  border: 1px solid color-mix(in srgb, var(--cream) 10%, transparent);
+}
+
+.featureCard h3 {
+  font-family: var(--font-brand);
+  font-size: 1.05rem;
+  margin: 0.75rem 0 0.4rem;
+}
+
+.featureCard p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.featureIcon {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.75rem;
+  height: 2.75rem;
+  padding: 0 0.5rem;
+  border-radius: 0.55rem;
+  background: color-mix(in srgb, var(--gold) 18%, transparent);
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.featureIconRed {
+  background: color-mix(in srgb, var(--join-red) 35%, transparent);
+  color: #f0a0a0;
+  font-size: 1.25rem;
+}
+
+.featureIconGreen {
+  background: color-mix(in srgb, var(--hero-bg) 55%, transparent);
+  color: #7dcea0;
+  font-size: 1.25rem;
 }
