@@ -1,0 +1,41 @@
+:root {
+  --felt: #1a4d3e;
+  --felt-light: #2d6b54;
+  --cream: #f3efe6;
+  --ink: #1c1917;
+  --accent: #e8a317;
+  --danger: #e85d4c;
+  --font-brand: "Passion One", sans-serif;
+  --font-ui: "Manrope", sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: var(--font-ui);
+  color: var(--cream);
+  background-color: var(--felt);
+  background-image: radial-gradient(
+    ellipse 120% 80% at 50% 50%,
+    #3a8f6e 0%,
+    var(--felt),
+    var(--felt-light)
+  );
+  background-attachment: fixed;
+}

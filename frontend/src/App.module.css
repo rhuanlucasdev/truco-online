@@ -1,0 +1,140 @@
+.lobby {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.lobby__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.lobby__brand {
+  font-family: var(--font-brand);
+  font-size: clamp(3rem, 10vw, 5rem);
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.lobby__subtitle {
+  font-family: var(--font-ui);
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  color: var(--cream);
+  opacity: 0.85;
+}
+
+/* CTAs da home — não são mais os forms */
+.lobby__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+  width: 100%;
+  max-width: 22rem;
+  margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+  .lobby__actions {
+    flex-direction: row;
+    max-width: 28rem;
+    justify-content: center;
+  }
+}
+
+.lobby__cta {
+  flex: 1;
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.9rem 1.25rem;
+  border: 2px solid transparent;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease, background-color 0.15s ease;
+}
+
+.lobby__cta:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.lobby__cta:active {
+  transform: translateY(0);
+}
+
+/* Criar — destaque */
+.lobby__cta--primary {
+  background-color: var(--accent);
+  color: var(--ink);
+}
+
+/* Entrar — secundário */
+.lobby__cta--secondary {
+  background-color: transparent;
+  color: var(--cream);
+  border-color: color-mix(in srgb, var(--cream) 45%, transparent);
+}
+
+.lobby__cta--secondary:hover {
+  background-color: color-mix(in srgb, var(--cream) 10%, transparent);
+}
+
+/* Overlay do modal */
+.lobby__modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background-color: color-mix(in srgb, #0f2e25 72%, transparent);
+  backdrop-filter: blur(2px);
+}
+
+.lobby__modal {
+  position: relative;
+  width: 100%;
+  max-width: 26rem;
+  padding: 1.75rem 1.5rem 1.5rem;
+  border-radius: 0.75rem;
+  background-color: color-mix(in srgb, var(--felt) 88%, #0a1f18);
+  border: 1px solid color-mix(in srgb, var(--cream) 18%, transparent);
+  box-shadow: 0 12px 40px color-mix(in srgb, #000 35%, transparent);
+  color: var(--cream);
+}
+
+.lobby__modalClose {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: var(--cream);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.lobby__modalClose:hover {
+  opacity: 1;
+  background-color: color-mix(in srgb, var(--cream) 12%, transparent);
+}
