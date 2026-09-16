@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { FiUser, FiHash, FiLogIn, FiKey } from "react-icons/fi";
-import { joinGame, type Game } from "../services/gameService";
+import { FiUser, FiHash, FiLogIn, FiKey, FiClock } from "react-icons/fi";
+import { joinGame, type Game } from "../../../services/gameService";
 import styles from "./JoinGame.module.css";
 
 const JoinGame = () => {
@@ -55,9 +55,9 @@ const JoinGame = () => {
       <label className={styles.field}>
         <span className={styles.labelRow}>
           <span>ID da Partida</span>
-          <span className={styles.labelHint}>Código da mesa</span>
+          <span className={styles.labelHint}>Código numérico</span>
         </span>
-        <span className={styles.inputWrap}>
+        <span className={`${styles.inputWrap} ${styles.inputId}`}>
           <FiHash aria-hidden />
           <input
             type="text"
@@ -84,6 +84,22 @@ const JoinGame = () => {
           />
         </span>
       </label>
+
+      <div className={`${styles.lastTable} ${styles.comingSoon}`}>
+        <div className={styles.lastTableCopy}>
+          <FiClock aria-hidden />
+          <div>
+            <p className={styles.lastTableTitle}>
+              Última mesa acessada
+              <span className={styles.soonBadge}>Em breve</span>
+            </p>
+            <p className={styles.lastTableMeta}>Histórico local da última partida</p>
+          </div>
+        </div>
+        <button type="button" className={styles.useLast} disabled>
+          Usar mesa
+        </button>
+      </div>
 
       {loading && <p className={styles.status}>Entrando na partida…</p>}
       {error && <p className={styles.error}>{error}</p>}
@@ -112,7 +128,10 @@ const JoinGame = () => {
       )}
 
       <footer className={styles.footer}>
-        <span className={styles.footerNote}>Pronto para duelizar</span>
+        <span className={`${styles.footerNote} ${styles.comingSoon}`}>
+          Conexão direta P2P
+          <span className={styles.soonBadge}>Em breve</span>
+        </span>
         <button
           type="button"
           className={styles.submit}

@@ -1,0 +1,45 @@
+.fan {
+  position: relative;
+  width: 176px;
+  height: 128px;
+  margin: 0 auto;
+}
+
+.slotLeft,
+.slotRight,
+.slotCenter {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slotLeft {
+  left: 0;
+  top: -7px;
+  width: 115px;
+  height: 126px;
+  z-index: 1;
+}
+
+.slotRight {
+  left: 77px;
+  top: -7px;
+  width: 115px;
+  height: 126px;
+  z-index: 1;
+}
+
+.slotCenter {
+  left: 48px;
+  top: -2px;
+  z-index: 2;
+}
+
+.tiltLeft {
+  transform: rotate(-20deg);
+}
+
+.tiltRight {
+  transform: rotate(20deg);
+}

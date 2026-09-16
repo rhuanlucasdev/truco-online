@@ -1,18 +1,41 @@
 :root {
-  --page-bg: #14110e;
-  --hero-bg: #1a4d3e;
-  --hero-bg-deep: #0f2e25;
-  --panel-bg: #2a241e;
-  --panel-bg-soft: #221c17;
-  --gold: #d4af37;
-  --accent: #f0b429;
-  --join-red: #8b2e2e;
+  --page-bg: #18120c;
+  --page-bg-mid: #251e18;
+  --page-bg-deep: #130d08;
+  --timber: #211a14;
+  --timber-raised: #302922;
+  --panel-bg: #251e18;
+  --ink: #130d08;
+  --gold: #f4bd61;
+  --gold-ink: #432c00;
+  --gold-deep: #624300;
+  --cream: #eee0d5;
+  --cream-card: #fcf8f0;
+  --muted: #c0c9bf;
+  --muted-dim: #8a938a;
+  --felt: rgba(22, 83, 49, 0.2);
+  --suit-red: #8b1e1e;
+  --suit-black: #1a1715;
+  --join-red: #8b1e1e;
   --join-red-hot: #a33a3a;
-  --cream: #f3efe6;
-  --ink: #1c1917;
-  --muted: color-mix(in srgb, var(--cream) 55%, transparent);
-  --font-brand: "Cinzel", serif;
-  --font-ui: "Manrope", sans-serif;
+  --success: #97d4a8;
+  --toggle-track: #165331;
+  --watermark: rgba(48, 41, 34, 0.4);
+  --watermark-red: rgba(137, 28, 29, 0.2);
+  --divider: #403830;
+
+  --font-brand: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-ui: "Outfit", system-ui, sans-serif;
+  --font-suit: Georgia, "Times New Roman", serif;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --shadow-hero: 0 24px 60px rgba(0, 0, 0, 0.75);
+  --shadow-panel: 0 16px 40px rgba(0, 0, 0, 0.65);
+  --shadow-cta-gold: 0 8px 10px rgba(244, 189, 97, 0.35);
+  --shadow-cta-dark: 0 8px 10px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 8px 9px rgba(0, 0, 0, 0.6);
+  --shadow-zap: 0 12px 12px rgba(0, 0, 0, 0.7);
 }
 
 * {
@@ -42,10 +65,4 @@ body {
   font-family: var(--font-ui);
   color: var(--cream);
   background-color: var(--page-bg);
-  background-image: radial-gradient(
-    ellipse 90% 60% at 50% 0%,
-    color-mix(in srgb, var(--hero-bg) 35%, transparent) 0%,
-    var(--page-bg) 55%
-  );
-  background-attachment: fixed;
 }
