@@ -46,6 +46,10 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-inline-size: 0;
 }
 
 .labelRow {
@@ -96,170 +100,6 @@
   color: color-mix(in srgb, var(--muted-dim) 60%, transparent);
 }
 
-.modes {
-  border: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.modesLegend {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-  margin-bottom: 0.25rem;
-}
-
-.soonBadge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.1rem 0.4rem;
-  border-radius: 999px;
-  background: var(--timber-raised);
-  color: var(--gold);
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.comingSoon {
-  opacity: 0.5;
-}
-
-.comingSoon button:disabled {
-  cursor: not-allowed;
-}
-
-.modeGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.5rem;
-}
-
-@media (min-width: 480px) {
-  .modeGrid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.modeOption {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.5rem;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: var(--ink);
-  color: var(--muted);
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
-}
-
-.modeActive {
-  background: var(--timber-raised);
-}
-
-.modeActive .modeTop {
-  color: var(--gold);
-}
-
-.modeTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-}
-
-.modeDesc {
-  font-size: 0.875rem;
-  font-weight: 400;
-  letter-spacing: 0;
-  line-height: 1.25;
-  color: var(--muted);
-}
-
-.toggleRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.5rem;
-  border-radius: var(--radius-sm);
-  background: var(--ink);
-}
-
-.toggleCopy {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  color: var(--muted);
-  min-width: 0;
-}
-
-.toggleTitle {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: var(--cream);
-}
-
-.toggleHint {
-  font-size: 0.875rem;
-  color: var(--muted);
-  line-height: 1.25rem;
-}
-
-.toggle {
-  position: relative;
-  width: 40px;
-  height: 24px;
-  flex-shrink: 0;
-  border: none;
-  border-radius: 9999px;
-  background: var(--timber-raised);
-  padding: 2px;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
-}
-
-.toggle:disabled {
-  cursor: not-allowed;
-}
-
-.toggleOn {
-  background: var(--toggle-track);
-}
-
-.toggleThumb {
-  display: block;
-  width: 20px;
-  height: 20px;
-  border-radius: 9999px;
-  background: var(--muted-dim);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition:
-    transform 0.15s ease,
-    background-color 0.15s ease;
-}
-
-.toggleOn .toggleThumb {
-  transform: translateX(16px);
-  background: var(--success);
-}
-
 .status {
   font-size: 0.875rem;
   color: var(--muted);
@@ -291,6 +131,39 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--muted-dim);
+}
+
+.modeRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.modeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.modeBtn:hover {
+  border-color: color-mix(in srgb, var(--gold) 40%, transparent);
+  color: var(--cream);
+}
+
+.modeBtnActive {
+  border-color: var(--gold);
+  color: var(--gold-ink);
+  background: var(--gold);
 }
 
 .submit {

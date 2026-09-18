@@ -1,41 +1,60 @@
+/**
+ * Casos de uso da partida.
+ */
 import { request } from "./api";
 
-/** Identidade do jogador no body de create/join (mesmo contrato no Nest). */
-type PlayerIdentity = {
+export type PlayerIdentity = {
   playerId: string;
   playerName: string;
 };
 
-type GameStatus = "WAITING_PLAYER_2" | "PLAYING" | "FINISHED";
+export type CreateGameBody = PlayerIdentity & {
+  maxPlayers: 2 | 4;
+  teamId: 0 | 1;
+};
+
+export type JoinGameBody = PlayerIdentity & {
+  /** Obrigatório em entrada nova; no rejoin o backend ignora. */
+  teamId?: 0 | 1;
+};
+
+export type GameStatus = "WAITING" | "PLAYING" | "FINISHED";
 
 export type Carta = {
   naipe: string;
   value: string;
 };
 
-type Jogada = {
+export type Jogada = {
   playerId: string;
   card: Carta;
 };
 
-type Player = {
+export type PlayerView = {
   playerId: string;
   name: string;
+  teamId: 0 | 1;
+  connected: boolean;
   hand: Carta[];
-  score: number;
+  handCount: number;
 };
 
-/** Estado da partida alinhado ao que o backend devolve. */
-export type Game = {
+export type GameView = {
   id: string;
-  playersList: Player[];
+  hostPlayerId: string;
+  maxPlayers: 2 | 4;
+  playersList: PlayerView[];
   gameStatus: GameStatus;
-  deck: Carta[];
   vira: Carta | null;
+  manilha: string | null;
   currentPlayerId: string;
   currentRound: Jogada[];
   roundWinners: (string | null)[];
+  teamScores: [number, number];
+  deckCount: number;
 };
+
+export type Game = GameView;
 
 type PlayCardBody = {
   playerId: string;
@@ -43,17 +62,44 @@ type PlayCardBody = {
   value: string;
 };
 
-/** Resposta mínima para a tela de criar (ainda WAITING, sem mesa completa). */
-export type CreateGameResponse = Pick<Game, "id" | "gameStatus">;
-
-export async function createGame(body: PlayerIdentity) {
-  return request<CreateGameResponse>("POST", "/game", body);
+export async function createGame(body: CreateGameBody) {
+  return request<GameView>("POST", "/game", body);
 }
 
-export async function joinGame(gameId: string, body: PlayerIdentity) {
-  return request<Game>("PATCH", `/game/${gameId}`, body);
+export async function joinGame(gameId: string, body: JoinGameBody) {
+  return request<GameView>("PATCH", `/game/${gameId}`, body);
+}
+
+export async function getGame(gameId: string, playerId: string) {
+  const qs = new URLSearchParams({ playerId });
+  return request<GameView>("GET", `/game/${gameId}?${qs}`);
 }
 
 export async function playCard(gameId: string, body: PlayCardBody) {
-  return request("POST", `/game/${gameId}/play`, body);
+  return request<GameView>("POST", `/game/${gameId}/play`, body);
+}
+
+export async function deleteGame(gameId: string, playerId: string) {
+  return request<{ id: string; deleted: boolean }>("DELETE", `/game/${gameId}`, {
+    playerId,
+  });
+}
+
+export async function leaveGame(gameId: string, playerId: string) {
+  return request<{ id: string; left: boolean; deleted: boolean }>(
+    "POST",
+    `/game/${gameId}/leave`,
+    { playerId },
+  );
+}
+
+export async function setTeam(
+  gameId: string,
+  playerId: string,
+  teamId: 0 | 1,
+) {
+  return request<GameView>("POST", `/game/${gameId}/team`, {
+    playerId,
+    teamId,
+  });
 }

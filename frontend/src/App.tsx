@@ -1,146 +1,232 @@
+/**
+ * Entrada da aplicação.
+ * create → waiting; join WAITING → waiting; PLAYING → mesa.
+ * Rejoin via localStorage (“Continuar partida”).
+ */
+import { useCallback, useEffect, useState } from "react";
+import LobbyPage from "./pages/LobbyPage";
+import WaitingRoomPage from "./pages/WaitingRoomPage";
+import GameTablePage from "./pages/GameTablePage";
+import type { PlayerSession } from "./types/session";
 import {
-  RiPokerClubsFill,
-  RiPokerDiamondsFill,
-  RiPokerHeartsFill,
-  RiPokerSpadesFill,
-} from "react-icons/ri";
-import styles from "./App.module.css";
-import { CardFan } from "./components/cards";
-import { CreateGame, JoinGame } from "./components/lobby";
-import { FiPlus, FiKey, FiShield, FiZap, FiShare2 } from "react-icons/fi";
-import { MdOutlineCampaign } from "react-icons/md";
+  getGame,
+  joinGame,
+  type GameView,
+} from "./services/gameService";
+import {
+  clearSession,
+  loadSession,
+  saveSession,
+} from "./utils/sessionStorage";
 
-function scrollToAcesso() {
-  document.getElementById("acesso")?.scrollIntoView({ behavior: "smooth" });
+type AppView = "lobby" | "waiting" | "playing";
+
+function readJoinFromUrl(): string {
+  if (typeof window === "undefined") return "";
+  return new URLSearchParams(window.location.search).get("join")?.trim() ?? "";
 }
 
 function App() {
+  const [view, setView] = useState<AppView>("lobby");
+  const [session, setSession] = useState<PlayerSession | null>(null);
+  const [game, setGame] = useState<GameView | null>(null);
+  const [initialJoinId, setInitialJoinId] = useState("");
+  const [endedNotice, setEndedNotice] = useState<string | null>(null);
+  const [savedSession, setSavedSession] = useState<PlayerSession | null>(null);
+  const [resuming, setResuming] = useState(false);
+
+  useEffect(() => {
+    setInitialJoinId(readJoinFromUrl());
+    setSavedSession(loadSession());
+  }, []);
+
+  function clearJoinQuery() {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has("join")) return;
+    url.searchParams.delete("join");
+    window.history.replaceState({}, "", url.pathname + url.search);
+  }
+
+  const goToGame = useCallback(
+    (next: PlayerSession, nextGame: GameView) => {
+      saveSession(next);
+      setSession(next);
+      setGame(nextGame);
+      setSavedSession(next);
+      setView(nextGame.gameStatus === "PLAYING" ? "playing" : "waiting");
+    },
+    [],
+  );
+
+  const handleGameCreated = useCallback((next: PlayerSession) => {
+    setEndedNotice(null);
+    setSession(next);
+    setGame(null);
+    setSavedSession(next);
+    setView("waiting");
+  }, []);
+
+  const handleGameJoined = useCallback(
+    (next: PlayerSession, nextGame: GameView) => {
+      clearJoinQuery();
+      setEndedNotice(null);
+      goToGame(next, nextGame);
+    },
+    [goToGame],
+  );
+
+  const handleWaitingReady = useCallback((nextGame: GameView) => {
+    setGame(nextGame);
+    setView("playing");
+  }, []);
+
+  const handleLeave = useCallback(() => {
+    setSession(null);
+    setGame(null);
+    setView("lobby");
+    setSavedSession(loadSession());
+  }, []);
+
+  const handleGameEnded = useCallback(() => {
+    clearSession();
+    setSession(null);
+    setGame(null);
+    setSavedSession(null);
+    setView("lobby");
+    setEndedNotice("A mesa foi encerrada pelo anfitrião.");
+  }, []);
+
+  async function handleResume() {
+    const saved = loadSession();
+    if (!saved) {
+      setSavedSession(null);
+      return;
+    }
+
+    setResuming(true);
+    setEndedNotice(null);
+    try {
+      let view = await getGame(saved.gameId, saved.playerId);
+      const me = view.playersList.find((p) => p.playerId === saved.playerId);
+
+      if (me && !me.connected) {
+        view = await joinGame(saved.gameId, {
+          playerId: saved.playerId,
+          playerName: saved.playerName,
+        });
+      }
+
+      goToGame(saved, view);
+    } catch (err) {
+      clearSession();
+      setSavedSession(null);
+      setEndedNotice(
+        err instanceof Error
+          ? err.message
+          : "Não foi possível voltar à partida.",
+      );
+    } finally {
+      setResuming(false);
+    }
+  }
+
+  if (view === "playing" && session) {
+    return (
+      <GameTablePage
+        session={session}
+        initialGame={game}
+        onLeave={handleLeave}
+        onGameEnded={handleGameEnded}
+      />
+    );
+  }
+
+  if (view === "waiting" && session) {
+    return (
+      <WaitingRoomPage
+        session={session}
+        initialGame={game}
+        onLeave={handleLeave}
+        onGameReady={handleWaitingReady}
+        onGameEnded={handleGameEnded}
+      />
+    );
+  }
+
   return (
-    <div className={styles.page}>
-      <span className={`${styles.watermark} ${styles.watermarkSpade}`} aria-hidden>
-        <RiPokerSpadesFill aria-hidden />
-      </span>
-      <span className={`${styles.watermark} ${styles.watermarkHeart}`} aria-hidden>
-        <RiPokerHeartsFill aria-hidden />
-      </span>
-      <span className={`${styles.watermark} ${styles.watermarkClub}`} aria-hidden>
-        <RiPokerClubsFill aria-hidden />
-      </span>
-      <span className={`${styles.watermark} ${styles.watermarkDiamond}`} aria-hidden>
-        <RiPokerDiamondsFill aria-hidden />
-      </span>
-
-      <section className={styles.hero}>
-        <div className={styles.felt} aria-hidden />
-        <div className={styles.heroInner}>
-          <CardFan />
-
-          <div className={styles.eyebrow}>
-            <span className={styles.dot} aria-hidden />
-            <p>Mesa clássica paulista & mineira</p>
-            <span className={styles.dot} aria-hidden />
-          </div>
-
-          <h1 className={styles.brand}>Truco Online</h1>
-          <p className={styles.tagline}>
-            Chame seu parceiro. Embaralhe as cartas. E peça truco.
-          </p>
-
-          <div className={styles.heroActions}>
-            <button
-              type="button"
-              className={`${styles.cta} ${styles.ctaPrimary}`}
-              onClick={scrollToAcesso}
-            >
-              <FiPlus aria-hidden />
-              Criar Partida
-            </button>
-            <button
-              type="button"
-              className={`${styles.cta} ${styles.ctaSecondary}`}
-              onClick={scrollToAcesso}
-            >
-              <FiKey aria-hidden />
-              <span className={styles.ctaSecondaryLabel}>
-                Entrar na
-                <br />
-                Partida
-              </span>
-            </button>
-          </div>
-
-          <ul className={styles.heroPerks}>
-            <li>
-              <FiShield aria-hidden />
-              Sem cadastro obrigatório
-            </li>
-            <li className={styles.perkDot} aria-hidden>
-              •
-            </li>
-            <li>
-              <FiZap aria-hidden />
-              Partidas rápidas de 12 tentos
-            </li>
-          </ul>
+    <>
+      {endedNotice && (
+        <p
+          style={{
+            margin: 0,
+            padding: "0.75rem 1rem",
+            textAlign: "center",
+            background: "#5c1212",
+            color: "#ffe8e8",
+            fontSize: "0.9rem",
+          }}
+        >
+          {endedNotice}
+        </p>
+      )}
+      {savedSession && (
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.75rem",
+            padding: "0.75rem 1rem",
+            background: "#302922",
+            borderBottom: "1px solid #403830",
+          }}
+        >
+          <span style={{ color: "#eee0d5", fontSize: "0.9rem" }}>
+            Mesa #{savedSession.gameId} salva neste navegador
+          </span>
+          <button
+            type="button"
+            onClick={() => void handleResume()}
+            disabled={resuming}
+            style={{
+              padding: "0.4rem 0.9rem",
+              border: "none",
+              borderRadius: 8,
+              background: "#f4bd61",
+              color: "#432c00",
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            {resuming ? "Entrando…" : "Continuar partida"}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              clearSession();
+              setSavedSession(null);
+            }}
+            style={{
+              padding: "0.4rem 0.9rem",
+              border: "1px solid #403830",
+              borderRadius: 8,
+              background: "transparent",
+              color: "#c0c9bf",
+              cursor: "pointer",
+            }}
+          >
+            Descartar
+          </button>
         </div>
-      </section>
-
-      <section id="acesso" className={styles.access}>
-        <div className={styles.accessHeader}>
-          <div>
-            <p className={styles.accessEyebrow}>Painel de acesso rápido</p>
-            <h2 className={styles.accessTitle}>Partidas e Acesso</h2>
-          </div>
-          <span className={`${styles.badge} ${styles.badgeSoon}`}>
-            <span className={styles.badgeDot} aria-hidden />
-            Mesas com vagas abertas
-            <span className={styles.soonBadge}>Em breve</span>
-          </span>
-        </div>
-
-        <div className={styles.accessGrid}>
-          <CreateGame />
-          <JoinGame />
-        </div>
-      </section>
-
-      <section className={styles.features}>
-        <article className={styles.featureCard}>
-          <span className={styles.featureDeck} aria-hidden>
-            <span>40</span>
-            <span>Cartas</span>
-          </span>
-          <div>
-            <h3>Baralho Tradicional</h3>
-            <p>Baralho limpo sem 8, 9 e 10. Pronto para o truco.</p>
-          </div>
-        </article>
-        <article className={`${styles.featureCard} ${styles.featureSoon}`}>
-          <span className={`${styles.featureIcon} ${styles.featureIconRed}`}>
-            <MdOutlineCampaign aria-hidden />
-          </span>
-          <div>
-            <h3>
-              Gritos e Truco
-              <span className={styles.soonBadge}>Em breve</span>
-            </h3>
-            <p>Peça Seis, Nove e Doze com efeitos sonoros imersivos.</p>
-          </div>
-        </article>
-        <article className={`${styles.featureCard} ${styles.featureSoon}`}>
-          <span className={`${styles.featureIcon} ${styles.featureIconGreen}`}>
-            <FiShare2 aria-hidden />
-          </span>
-          <div>
-            <h3>
-              Convite por Link
-              <span className={styles.soonBadge}>Em breve</span>
-            </h3>
-            <p>Envie direto no WhatsApp para seu amigo entrar na hora.</p>
-          </div>
-        </article>
-      </section>
-    </div>
+      )}
+      <LobbyPage
+        onGameCreated={handleGameCreated}
+        onGameJoined={handleGameJoined}
+        initialJoinId={initialJoinId}
+      />
+    </>
   );
 }
 

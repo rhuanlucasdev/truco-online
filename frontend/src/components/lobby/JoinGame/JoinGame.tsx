@@ -1,42 +1,61 @@
-import { useState } from "react";
-import { FiUser, FiHash, FiLogIn, FiKey, FiClock } from "react-icons/fi";
-import { joinGame, type Game } from "../../../services/gameService";
+/**
+ * Formulario: entrar / reentrar (PATCH /game/:id).
+ */
+import { useEffect, useState } from "react";
+import { FiUser, FiHash, FiLogIn, FiKey } from "react-icons/fi";
+import { joinGame, type GameView } from "../../../services/gameService";
+import type { PlayerSession } from "../../../types/session";
+import { saveSession } from "../../../utils/sessionStorage";
 import styles from "./JoinGame.module.css";
 
-const JoinGame = () => {
-  const [gameId, setGameId] = useState("");
+type JoinGameProps = {
+  initialGameId?: string;
+  onJoined: (session: PlayerSession, game: GameView) => void;
+};
+
+type TeamId = 0 | 1;
+
+function JoinGame({ initialGameId = "", onJoined }: JoinGameProps) {
+  const [gameId, setGameId] = useState(initialGameId);
   const [playerName, setPlayerName] = useState("");
+  const [teamId, setTeamId] = useState<TeamId>(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [joinedGame, setJoinedGame] = useState<Game | null>(null);
-  const [myPlayerId, setMyPlayerId] = useState<string | null>(null);
 
-  const handleJoinGame = async () => {
-    setJoinedGame(null);
+  useEffect(() => {
+    if (initialGameId) setGameId(initialGameId);
+  }, [initialGameId]);
+
+  async function handleSubmit() {
     if (!gameId.trim() || !playerName.trim()) {
       setError("Id da partida e nome do jogador são obrigatórios");
       return;
     }
+
     setLoading(true);
     setError(null);
+
     try {
       const playerId = crypto.randomUUID();
-      setMyPlayerId(playerId);
       const response = await joinGame(gameId.trim(), {
         playerId,
         playerName: playerName.trim(),
+        teamId,
       });
-      setJoinedGame(response);
+
+      const session = {
+        gameId: response.id,
+        playerId,
+        playerName: playerName.trim(),
+      };
+      saveSession(session);
+      onJoined(session, response);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro desconhecido");
     } finally {
       setLoading(false);
     }
-  };
-
-  const myHand = joinedGame?.playersList.find(
-    (p) => p.playerId === myPlayerId,
-  )?.hand;
+  }
 
   return (
     <article className={styles.panel}>
@@ -47,7 +66,7 @@ const JoinGame = () => {
         <div>
           <h2 className={styles.title}>Entrar na Partida</h2>
           <p className={styles.subtitle}>
-            Digite o código enviado pelo seu parceiro
+            Digite o código e escolha seu time
           </p>
         </div>
       </header>
@@ -85,57 +104,36 @@ const JoinGame = () => {
         </span>
       </label>
 
-      <div className={`${styles.lastTable} ${styles.comingSoon}`}>
-        <div className={styles.lastTableCopy}>
-          <FiClock aria-hidden />
-          <div>
-            <p className={styles.lastTableTitle}>
-              Última mesa acessada
-              <span className={styles.soonBadge}>Em breve</span>
-            </p>
-            <p className={styles.lastTableMeta}>Histórico local da última partida</p>
-          </div>
+      <fieldset className={styles.field}>
+        <span className={styles.labelRow}>
+          <span>Seu time</span>
+        </span>
+        <div className={styles.modeRow} role="group" aria-label="Time">
+          <button
+            type="button"
+            className={`${styles.modeBtn} ${teamId === 0 ? styles.modeBtnActive : ""}`}
+            onClick={() => setTeamId(0)}
+          >
+            Time 1
+          </button>
+          <button
+            type="button"
+            className={`${styles.modeBtn} ${teamId === 1 ? styles.modeBtnActive : ""}`}
+            onClick={() => setTeamId(1)}
+          >
+            Time 2
+          </button>
         </div>
-        <button type="button" className={styles.useLast} disabled>
-          Usar mesa
-        </button>
-      </div>
+      </fieldset>
 
       {loading && <p className={styles.status}>Entrando na partida…</p>}
       {error && <p className={styles.error}>{error}</p>}
-      {joinedGame && (
-        <div className={styles.successBox}>
-          <p>
-            Entrou! ID: <strong>{joinedGame.id}</strong> ·{" "}
-            {joinedGame.gameStatus}
-          </p>
-          <p>
-            Jogadores:{" "}
-            {joinedGame.playersList.map((player) => player.name).join(", ")}
-          </p>
-          {joinedGame.vira && (
-            <p>
-              Vira: {joinedGame.vira.value} de {joinedGame.vira.naipe}
-            </p>
-          )}
-          {myHand && myHand.length > 0 && (
-            <p>
-              Minhas cartas:{" "}
-              {myHand.map((c) => `${c.value} de ${c.naipe}`).join(", ")}
-            </p>
-          )}
-        </div>
-      )}
 
       <footer className={styles.footer}>
-        <span className={`${styles.footerNote} ${styles.comingSoon}`}>
-          Conexão direta P2P
-          <span className={styles.soonBadge}>Em breve</span>
-        </span>
         <button
           type="button"
           className={styles.submit}
-          onClick={handleJoinGame}
+          onClick={handleSubmit}
           disabled={loading}
         >
           Entrar na Partida
@@ -144,6 +142,6 @@ const JoinGame = () => {
       </footer>
     </article>
   );
-};
+}
 
 export default JoinGame;

@@ -1,0 +1,54 @@
+.section {
+  position: relative;
+  z-index: 1;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 28rem;
+  padding: 1rem 1.125rem;
+  border-radius: var(--radius-md);
+  background: var(--timber);
+}
+
+.card h3 {
+  font-family: var(--font-brand);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--cream);
+  line-height: 1.4;
+  margin-bottom: 0.15rem;
+}
+
+.card p {
+  font-size: 0.875rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.deckIcon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  background: #3b332c;
+  color: var(--gold);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.deckIcon span:first-child {
+  font-size: 0.625rem;
+}
+
+.deckIcon span:last-child {
+  font-size: 0.5rem;
+  color: var(--muted-dim);
+  text-transform: uppercase;
+}

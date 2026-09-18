@@ -1,0 +1,36 @@
+.mark {
+  position: absolute;
+  font-family: var(--font-suit);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  line-height: 1;
+}
+
+.spade {
+  left: 1rem;
+  top: 4rem;
+  font-size: 8rem;
+  color: var(--watermark);
+}
+
+.heart {
+  right: 1.5rem;
+  top: 10rem;
+  font-size: 8.5rem;
+  color: var(--watermark-red);
+}
+
+.club {
+  left: 3rem;
+  bottom: 8rem;
+  font-size: 7.5rem;
+  color: rgba(48, 41, 34, 0.3);
+}
+
+.diamond {
+  right: 6rem;
+  bottom: 2rem;
+  font-size: 9rem;
+  color: var(--watermark-red);
+}

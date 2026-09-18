@@ -1,0 +1,34 @@
+/* Shell da lobby — seções filhas trazem o próprio CSS Module. */
+
+.page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding: 2.5rem clamp(1.25rem, 4vw, 3rem) 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  overflow: hidden;
+  background-color: var(--page-bg);
+  background-image: radial-gradient(
+    ellipse 90% 55% at 50% 0%,
+    #251e18 0%,
+    var(--page-bg) 60%,
+    #130d08 100%
+  );
+}
+
+.watermarkLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page > :not(.watermarkLayer) {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+}

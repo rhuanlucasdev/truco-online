@@ -1,3 +1,7 @@
+/**
+ * Carta visual (rank + naipe) para o hero / mesa futura.
+ * Não usa o tipo Carta do backend — é só UI.
+ */
 import type { IconType } from "react-icons";
 import {
   RiPokerClubsFill,
@@ -9,7 +13,6 @@ import styles from "./PlayingCard.module.css";
 
 export type Suit = "hearts" | "diamonds" | "spades" | "clubs";
 export type Rank = "A" | "2" | "3" | "4" | "5" | "6" | "7" | "J" | "Q" | "K";
-
 type PipSlot = "tl" | "tc" | "tr" | "ml" | "c" | "mr" | "bl" | "bc" | "br";
 
 type PlayingCardProps = {

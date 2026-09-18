@@ -1,3 +1,6 @@
+/**
+ * Fan decorativo de cartas do hero (7♥, 4♣, A♠).
+ */
 import PlayingCard from "../PlayingCard";
 import styles from "./CardFan.module.css";
 
