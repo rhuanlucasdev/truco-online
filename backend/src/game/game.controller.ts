@@ -8,20 +8,20 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { GameService } from './game.service';
-import { GameBroadcast } from './game-broadcast';
-import { CreateGameDto } from './dto/create-game.dto';
-import { JoinGameDto } from './dto/join-game.dto';
-import { PlayCardDto } from './dto/play-card.dto';
-import { DeleteGameDto } from './dto/delete-game.dto';
-import { LeaveGameDto } from './dto/leave-game.dto';
-import { SetTeamDto } from './dto/set-team.dto';
+import { GameService } from './game.service.js';
+import { GameGateway } from './game.gateway.js';
+import { CreateGameDto } from './dto/create-game.dto.js';
+import { JoinGameDto } from './dto/join-game.dto.js';
+import { PlayCardDto } from './dto/play-card.dto.js';
+import { DeleteGameDto } from './dto/delete-game.dto.js';
+import { LeaveGameDto } from './dto/leave-game.dto.js';
+import { SetTeamDto } from './dto/set-team.dto.js';
 
 @Controller('game')
 export class GameController {
   constructor(
     private readonly gameService: GameService,
-    private readonly gameBroadcast: GameBroadcast,
+    private readonly gameGateway: GameGateway,
   ) {}
 
   @Post()
@@ -35,7 +35,7 @@ export class GameController {
     @Body() joinGameDto: JoinGameDto,
   ) {
     this.gameService.joinGame(gameId, joinGameDto);
-    await this.gameBroadcast.broadcastGame(gameId);
+    await this.gameGateway.broadcastGame(gameId);
     return this.gameService.getGameForPlayer(gameId, joinGameDto.playerId);
   }
 
@@ -47,9 +47,9 @@ export class GameController {
     const result = this.gameService.leaveGame(gameId, body.playerId);
 
     if (result.deleted) {
-      await this.gameBroadcast.broadcastGameEnded(gameId);
+      await this.gameGateway.broadcastGameEnded(gameId);
     } else {
-      await this.gameBroadcast.broadcastGame(gameId);
+      await this.gameGateway.broadcastGame(gameId);
     }
 
     return result;
@@ -61,7 +61,7 @@ export class GameController {
     @Body() body: SetTeamDto,
   ) {
     const view = this.gameService.setTeam(gameId, body.playerId, body.teamId);
-    await this.gameBroadcast.broadcastGame(gameId);
+    await this.gameGateway.broadcastGame(gameId);
     return view;
   }
 
@@ -84,7 +84,7 @@ export class GameController {
     @Body() playCardDto: PlayCardDto,
   ) {
     const view = this.gameService.playCard(gameId, playCardDto);
-    await this.gameBroadcast.broadcastGame(gameId);
+    await this.gameGateway.broadcastGame(gameId);
     return view;
   }
 
@@ -94,7 +94,7 @@ export class GameController {
     @Body() body: DeleteGameDto,
   ) {
     const result = this.gameService.deleteGame(gameId, body.playerId);
-    await this.gameBroadcast.broadcastGameEnded(gameId);
+    await this.gameGateway.broadcastGameEnded(gameId);
     return result;
   }
 }
