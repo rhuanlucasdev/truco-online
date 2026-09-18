@@ -6,29 +6,31 @@
     },
     "backend": {
       "root": "backend/",
-      "framework": "nestjs",
-      "buildCommand": "npm run build"
+      "framework": "nestjs"
     }
   },
   "rewrites": [
     {
-      "source": "/api(/.*)?",
+      "source": "/api/(.*)",
       "destination": {
-        "type": "service",
         "service": "backend"
       }
     },
     {
-      "source": "/socket.io(/.*)?",
+      "source": "/api",
       "destination": {
-        "type": "service",
+        "service": "backend"
+      }
+    },
+    {
+      "source": "/socket.io/(.*)",
+      "destination": {
         "service": "backend"
       }
     },
     {
       "source": "/(.*)",
       "destination": {
-        "type": "service",
         "service": "frontend"
       }
     }
