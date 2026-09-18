@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateGameDto } from './dto/create-game.dto.js';
-import { JoinGameDto } from './dto/join-game.dto.js';
-import { DeckService, Carta } from './deck/deck.service.js';
-import { PlayCardDto } from './dto/play-card.dto.js';
+import { CreateGameDto } from './dto/create-game.dto';
+import { JoinGameDto } from './dto/join-game.dto';
+import { DeckService, Carta } from './deck/deck.service';
+import { PlayCardDto } from './dto/play-card.dto';
 
 export interface Jogada {
   playerId: string;

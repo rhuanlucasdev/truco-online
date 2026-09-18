@@ -30,7 +30,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { GameService } from './game.service.js';
+import { GameService } from './game.service';
 
 /** Payload que o frontend manda ao entrar na “sala” da partida. */
 type RoomJoinPayload = {
