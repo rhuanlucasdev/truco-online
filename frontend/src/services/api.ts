@@ -1,8 +1,11 @@
 /**
  * Cliente HTTP genérico.
  * Único lugar que fala com fetch — UI e gameService não conhecem URL/método bruto.
+ *
+ * Local:  http://localhost:3000/api
+ * Vercel: /api  (rewrite → serviço backend)
  */
-const base = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+const base = import.meta.env.VITE_API_URL ?? "http://localhost:3000/api";
 
 export async function request<T>(
   method: string,
